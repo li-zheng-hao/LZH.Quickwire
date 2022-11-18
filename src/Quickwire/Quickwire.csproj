@@ -2,12 +2,16 @@
 
   <PropertyGroup>
     <VersionPrefix>1.3.2</VersionPrefix>
-    <Title>Quickwire</Title>
+    <Title>LZH.Quickwire</Title>
     <Description>Attribute-based dependency injection for .NET.</Description>
-    <Authors>Flavien Charlon</Authors>
+    <Authors>LiZhengHao</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Copyright>Copyright © 2021 Flavien Charlon</Copyright>
+    <PackageId>LZH.Quickwire</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageProjectUrl>https://github.com/li-zheng-hao/LZH.Quickwire</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/li-zheng-hao/LZH.Quickwire</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
