@@ -75,7 +75,10 @@ public class ServiceActivator : IServiceActivator
             foreach (SetterInfo setter in setters)
             {
                 object? resolvedDependency = Resolve(serviceProvider, setter.ServiceType, setter.DependencyResolver);
-                setter.Setter(result, resolvedDependency);
+                if (resolvedDependency is not null)
+                {
+                    setter.Setter(result, resolvedDependency);
+                }
             }
 
             return result;

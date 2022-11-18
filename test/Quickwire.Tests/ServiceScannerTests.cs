@@ -17,6 +17,7 @@ namespace Quickwire.Tests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quickwire.Tests.Implementations;
@@ -50,7 +51,18 @@ public partial class ServiceScannerTests
         Assert.Equal(ServiceLifetime.Transient, result[0].Lifetime);
         Assert.Equal(nameof(TypeRegistered), result[0].ImplementationFactory(_serviceProvider));
     }
+    [Theory]
+    [InlineData(typeof(TypeRegisteredAsBaseImplementedInterfaces))]
+    [InlineData(typeof(TypeRegisteredAsImplementedInterfaces))]
+    public void ScanServiceRegistrations_TypeAsImplInterfaces(Type type)
+    {
+        List<ServiceDescriptor> result = ServiceScanner
+            .ScanServiceRegistrations(type, _serviceProvider)
+            .Select(getDescriptor => getDescriptor())
+            .ToList();
 
+        Assert.Equal(2,result.Count);
+    }
     [Fact]
     public void ScanServiceRegistrations_TypeNotRegistered()
     {

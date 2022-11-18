@@ -21,6 +21,34 @@ using Quickwire.Tests.Implementations;
 
 public partial class ServiceScannerTests
 {
+    public interface ITestInterface
+    {
+
+    }
+    public class TypeRegisteredBase:IComparable
+    {
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    [RegisterService(AsImplementedInterfaces = true)]
+    public class TypeRegisteredAsImplementedInterfaces : IComparable,ITestInterface
+    {
+        public int CompareTo(object obj)
+        {
+            return 1;
+        }
+    }
+
+    [RegisterService(AsImplementedInterfaces = true)]
+    public class TypeRegisteredAsBaseImplementedInterfaces :TypeRegisteredBase,ITestInterface
+    {
+        public int CompareTo(object obj)
+        {
+            return 1;
+        }
+    }
     [RegisterService]
     public class TypeRegistered { }
 

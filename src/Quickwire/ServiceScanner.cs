@@ -1,11 +1,11 @@
 ﻿// Copyright 2021 Flavien Charlon
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,18 +31,31 @@ public static class ServiceScanner
         {
             foreach (RegisterServiceAttribute registerAttribute in type.GetCustomAttributes<RegisterServiceAttribute>())
             {
-                Type serviceType = registerAttribute.ServiceType ?? type;
-
-                if (!serviceType.IsAssignableFrom(type))
+                if (registerAttribute.AsImplementedInterfaces)
                 {
-                    throw new ArgumentException(
-                        $"The concrete type '{type.FullName}' cannot be used to register service type '{serviceType.FullName}'.");
+                    IEnumerable<Type> interfaces=type.GetInterfaces().Where(i => i != typeof(IDisposable));
+                    foreach (Type implInterface in interfaces)
+                    {
+                        yield return () => new ServiceDescriptor(
+                            implInterface,
+                            serviceActivator.GetFactory(type),
+                            registerAttribute.Scope);
+                    }
                 }
+                else
+                {
+                    Type serviceType = registerAttribute.ServiceType ?? type;
 
-                yield return () => new ServiceDescriptor(
-                    serviceType,
-                    serviceActivator.GetFactory(type),
-                    registerAttribute.Scope);
+                    if (!serviceType.IsAssignableFrom(type))
+                    {
+                        throw new ArgumentException(
+                            $"The concrete type '{type.FullName}' cannot be used to register service type '{serviceType.FullName}'.");
+                    }
+                    yield return () => new ServiceDescriptor(
+                        serviceType,
+                        serviceActivator.GetFactory(type),
+                        registerAttribute.Scope);
+                }
             }
         }
     }

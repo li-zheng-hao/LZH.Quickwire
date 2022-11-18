@@ -29,6 +29,11 @@ public class RegisterServiceAttribute : Attribute
     }
 
     /// <summary>
+    /// Automatically register services as all implemented interfaces
+    /// </summary>
+    public bool AsImplementedInterfaces { get; set; }
+
+    /// <summary>
     /// The lifetime of the service.
     /// </summary>
     public ServiceLifetime Scope { get; }
