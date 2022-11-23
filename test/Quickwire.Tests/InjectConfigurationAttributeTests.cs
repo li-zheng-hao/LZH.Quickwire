@@ -22,12 +22,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Quickwire.Attributes;
 using Xunit;
 
-public class InjectConfigurationAttributeTests
+public partial class InjectConfigurationAttributeTests
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IConfiguration _configuration;
     private readonly InjectConfigurationAttribute _injectConfiguration;
-
+    private readonly ServiceActivator _activator = new();
     public InjectConfigurationAttributeTests()
     {
         ServiceCollection services = new();
@@ -35,6 +35,13 @@ public class InjectConfigurationAttributeTests
         services.AddSingleton<IConfiguration>(_configuration);
         _serviceProvider = services.BuildServiceProvider();
         _injectConfiguration = new InjectConfigurationAttribute("key");
+    }
+
+    [Fact]
+    public void Resolve_ConfigurationWithIntNull()
+    {
+       TestConfig config=(TestConfig) _activator.GetFactory(typeof(TestConfig))(_serviceProvider);
+       Assert.Equal(300,config.Value2);
     }
 
     [Theory]
@@ -132,8 +139,9 @@ public class InjectConfigurationAttributeTests
     public void Resolve_CannotConvert()
     {
         _configuration["key"] = "...";
-
-        Assert.Throws<InvalidCastException>(
-            () => _injectConfiguration.Resolve(_serviceProvider, typeof(StringComparer)));
+        // resolve cannot convert value should return default value
+        // Assert.Throws<InvalidCastException>(
+        //     () => _injectConfiguration.Resolve(_serviceProvider, typeof(StringComparer)));
+        Assert.Null(_injectConfiguration.Resolve(_serviceProvider, typeof(StringComparer)));
     }
 }
