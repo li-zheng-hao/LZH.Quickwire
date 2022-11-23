@@ -1,11 +1,11 @@
 ﻿// Copyright 2021 Flavien Charlon
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,22 @@ public partial class InjectConfigurationAttributeTests
         services.AddSingleton<IConfiguration>(_configuration);
         _serviceProvider = services.BuildServiceProvider();
         _injectConfiguration = new InjectConfigurationAttribute("key");
+    }
+    [Fact]
+    public void Resolve_ListValues()
+    {
+        _configuration["List:Values:0"] = "2022-11-23 17:25:46";
+        _configuration["List:Values:1"] = "2022-11-23 17:25:46";
+        _configuration["List:Values:2"] = "2022-11-23 17:25:46";
+        _configuration["List:Integers:0"] = "1";
+        _configuration["List:Integers:1"] = "2";
+        _configuration["List:Integers:2"] = "3";
+        TestListConfig config = (TestListConfig)_activator.GetFactory(typeof(TestListConfig))(_serviceProvider);
+        Assert.Equal(3, config.Value2.Length);
+        Assert.Equal(3, config.Value3.Length);
+        Assert.Equal(3, config.Value.Count);
+        Assert.Equal(3, config.Value4.Length);
+        Assert.Equal(3, config.Value5.Count);
     }
 
     [Fact]

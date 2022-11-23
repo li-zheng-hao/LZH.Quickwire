@@ -54,9 +54,32 @@ public class InjectConfigurationAttribute : Attribute, IDependencyResolver
                 return CreateTypedArray(serviceProvider, typeParameter, configuration);
         }
 
+        if (IsList(type))
+        {
+            return CreateTypedList(serviceProvider, type, configuration);
+        }
+        if (type.IsArray)
+        {
+            return CreateTypedArray(serviceProvider, type.GetElementType()!, configuration);
+        }
+
         return ResolveValue(type, value, serviceProvider);
     }
-
+    private bool IsList(Type type)=>type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
+    private object CreateTypedList(IServiceProvider serviceProvider, Type type,
+        IConfiguration configuration)
+    {
+        List<string> children = configuration
+            .GetSection(ConfigurationKey)
+            .GetChildren()
+            .Select(child => child.Value)
+            .ToList();
+        object? result=Activator.CreateInstance(type);
+        MethodInfo? addRangeMethod = type.GetMethod("Add");
+        for (int i = 0; i < children.Count; i++)
+            addRangeMethod.Invoke(result, new[] { ResolveValue(type.GetGenericArguments()[0], children[i], serviceProvider) });
+        return result;
+    }
     private static object? ResolveValue(Type type, string value, IServiceProvider serviceProvider)
     {
         if (type == typeof(string))
@@ -144,3 +167,4 @@ public class InjectConfigurationAttribute : Attribute, IDependencyResolver
         return _asReadOnlyMethodInfo.MakeGenericMethod(type).Invoke(null, new[] { array });
     }
 }
+
