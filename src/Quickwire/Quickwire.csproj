@@ -9,7 +9,7 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Copyright>Copyright © 2021 Flavien Charlon</Copyright>
     <PackageId>LZH.Quickwire</PackageId>
-    <PackageVersion>1.0.1</PackageVersion>
+    <PackageVersion>1.1.0</PackageVersion>
     <PackageProjectUrl>https://github.com/li-zheng-hao/LZH.Quickwire</PackageProjectUrl>
     <RepositoryUrl>https://github.com/li-zheng-hao/LZH.Quickwire</RepositoryUrl>
   </PropertyGroup>
